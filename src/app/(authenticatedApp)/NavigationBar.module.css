@@ -1,0 +1,11 @@
+.navigation {
+    width: 100%;
+    background-color: #343a40;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+}
+
+.title {
+    color: white;
+}
