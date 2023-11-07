@@ -1,5 +1,6 @@
 import getUsers from '@/db/getUsers';
 import UsersTable from './UsersTable';
+import NewUserForm from './NewUserForm';
 
 export default async function UsersPage() {
     const users = await getUsers();
@@ -7,6 +8,7 @@ export default async function UsersPage() {
     return (
         <>
             <UsersTable users={users} />
+            <NewUserForm />
         </>
     );
 }

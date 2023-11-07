@@ -1,0 +1,15 @@
+.form {
+    padding: 1rem;
+}
+
+.formContent {
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 1rem;
+}
+
+.inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
