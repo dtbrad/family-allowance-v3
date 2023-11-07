@@ -22,7 +22,6 @@ export default function NewUserForm() {
 
     useEffect(
         function () {
-            console.log({state});
             formRef.current?.reset();
         },
         [state]

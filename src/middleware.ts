@@ -20,13 +20,13 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/signin', request.url));
     }
 
-    if (
-        nextUrl.pathname.startsWith('/users') &&
-        user &&
-        user?.role === Role.standard
-    ) {
-        return NextResponse.redirect(new URL('/summary', request.url));
-    }
+    // if (
+    //     nextUrl.pathname.startsWith('/users') &&
+    //     user &&
+    //     user?.role === Role.standard
+    // ) {
+    //     return NextResponse.redirect(new URL('/summary', request.url));
+    // }
 
     // if (nextUrl.pathname === `/users/:path*` && user?.role === Role.standard) {
     //     return NextResponse.redirect(new URL('/summary', request.url));

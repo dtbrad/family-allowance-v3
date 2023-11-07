@@ -26,7 +26,7 @@ export default async function addUser({
                 PK: lowerCaseUserId,
                 SK: lowerCaseUserId,
                 role: 'standard',
-                passwordDigest: generatePassword(password, salt),
+                passwordDigest: generatePassword(password),
                 allowanceAmount,
                 dayPreference,
                 balance: 0,

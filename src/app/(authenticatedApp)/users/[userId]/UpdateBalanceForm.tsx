@@ -26,12 +26,8 @@ function AmountInput({status}: {status?: Status}) {
 
     useEffect(
         function () {
-            // if (status === Status.success) {
             setAmount('');
             setDescription('');
-            // }
-            console.log('RESETTING AMOUNT INPUT', myRef);
-            // setAmount('');
         },
         [status]
     );

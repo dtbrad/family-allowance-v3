@@ -1,12 +1,12 @@
 'use server';
 
-// import { redirect } from "next/dist/server/api-utils";
+// import {redirect} from 'next/dist/server/api-utils';
 import {redirect} from 'next/navigation';
 import getUser from '@/db/getUser';
-import {revalidatePath} from 'next/cache';
 import {createHmac} from 'crypto';
 import jwt from 'jsonwebtoken';
 import {cookies} from 'next/headers';
+import {Role} from '@/domain/Role';
 
 const secret = process.env.JWT_SECRET!;
 const cryptoSalt = process.env.CRYPTO_SALT;
@@ -48,9 +48,15 @@ export default async function signinUser(prevState: any, formData: FormData) {
     const password = formData.get('password') as string;
 
     await sleep(2000);
+
     const userFromDb = await getUser(name);
 
-    if (userFromDb && passwordsMatch(password, userFromDb.passwordDigest)) {
+    const passwordsDoMatch = passwordsMatch(
+        password,
+        userFromDb.passwordDigest
+    );
+
+    if (userFromDb && passwordsDoMatch) {
         const accessToken = jwt.sign(
             {
                 userId: userFromDb.userId,
@@ -76,7 +82,9 @@ export default async function signinUser(prevState: any, formData: FormData) {
             path: '/'
         });
 
-        return redirect('/users');
+        return userFromDb.role === Role.admin
+            ? redirect('/users')
+            : redirect('/summary');
     }
 
     return {
