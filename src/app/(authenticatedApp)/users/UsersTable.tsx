@@ -1,6 +1,7 @@
 'use client';
 
 import {User} from '@/domain/User';
+import Link from 'next/link';
 import styles from './UsersTable.module.css';
 import DeleteUser from './DeleteUser';
 
@@ -21,7 +22,9 @@ export default function UsersTable({users}: {users: User[]}) {
                         ({userId, balance, allowanceAmount, dayPreference}) => (
                             <tr key={userId}>
                                 <td className={styles.usersTableCell}>
-                                    {userId}
+                                    <Link href={`/users/${userId}`}>
+                                        {userId}
+                                    </Link>
                                     <DeleteUser id={userId} />
                                 </td>
                                 <td className={styles.usersTableCell}>
