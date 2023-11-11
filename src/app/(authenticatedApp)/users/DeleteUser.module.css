@@ -18,3 +18,8 @@
     color: red;
     padding-left: 1rem;
 }
+
+.deleteForm {
+    display: flex;
+    flex-direction: row;
+}

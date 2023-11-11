@@ -1,45 +1,49 @@
 'use client';
 
 import {useState} from 'react';
+import {useFormStatus} from 'react-dom';
 import styles from './DeleteUser.module.css';
 import {deleteUser} from './actions';
-import {useTransition} from 'react';
 
-export default function DeleteUser({id}: {id: string}) {
-    const [needsConfirmation, setNeedsConfirmation] = useState<boolean>(false);
-    const [isPending, startTransition] = useTransition();
+function FormContents({id}: {id: string}) {
+    const {pending} = useFormStatus();
+    const [needsConfirmation, setNeedsConfirmation] = useState(true);
+
+    if (pending) {
+        return <p className={styles.deleteUser}>Pending...</p>;
+    }
 
     if (needsConfirmation) {
-        return isPending ? (
-            <span className={styles.deletingUser}>Deleting...</span>
-        ) : (
-            <>
-                <button
-                    className={styles.deleteUser}
-                    onClick={() =>
-                        startTransition(function () {
-                            return deleteUser(id);
-                        })
-                    }
-                >
-                    Confirm Delete
-                </button>
-                <button
-                    className={styles.cancelDelete}
-                    onClick={() => setNeedsConfirmation(false)}
-                >
-                    Cancel
-                </button>
-            </>
+        return (
+            <button
+                className={styles.deleteUser}
+                onClick={() => setNeedsConfirmation(false)}
+            >
+                Delete
+            </button>
         );
     }
 
     return (
-        <button
-            className={styles.deleteUser}
-            onClick={() => setNeedsConfirmation(true)}
-        >
-            x
-        </button>
+        <>
+            <input type="hidden" name="id" value={id} />
+            <button className={styles.deleteUser} type="submit">
+                Confirm Delete
+            </button>
+            <button
+                className={styles.deleteUser}
+                onClick={() => setNeedsConfirmation(true)}
+            >
+                Cancel
+            </button>
+        </>
+    );
+}
+
+export default function DeleteUser({id}: {id: string}) {
+    return (
+        <form className={styles.deleteForm} action={deleteUser}>
+            <FormContents id={id} />
+        </form>
     );
 }

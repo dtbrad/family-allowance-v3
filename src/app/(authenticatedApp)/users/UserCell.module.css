@@ -1,0 +1,4 @@
+.userCell {
+    display: flex;
+    flex-direction: row;
+}
