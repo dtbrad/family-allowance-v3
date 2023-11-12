@@ -5,7 +5,7 @@ import {useFormState, useFormStatus} from 'react-dom';
 import styles from './NewUserForm.module.css';
 import {addUser} from './actions';
 
-const initialState = {status: null};
+const initialState = {response: null, error: null};
 
 export function SubmitButton() {
     const {pending} = useFormStatus();
@@ -22,13 +22,18 @@ export default function NewUserForm() {
 
     useEffect(
         function () {
-            formRef.current?.reset();
+            if (!state.error) {
+                formRef.current?.reset();
+            }
         },
         [state]
     );
 
     return (
         <div className={styles.form}>
+            {state.error && (
+                <p className={styles.errorMessage}>{state.error}</p>
+            )}
             <div className={styles.formContent}>
                 <div>Create a new user</div>
                 <form

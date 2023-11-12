@@ -13,3 +13,11 @@
     flex-direction: column;
     gap: 1rem;
 }
+
+.errorMessage {
+    color: red;
+}
+
+.successMessage {
+    color: green;
+}

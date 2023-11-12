@@ -7,7 +7,7 @@ const tableName = process.env.TABLE_NAME || '';
 export interface AddUserParams {
     userId: string;
     password: string;
-    allowanceAmount: string;
+    allowanceAmount: number;
     dayPreference: string;
 }
 

@@ -1,9 +1,5 @@
-'use client';
-
 import {User} from '@/domain/User';
-import Link from 'next/link';
 import styles from './UsersTable.module.css';
-import DeleteUser from './DeleteUser';
 import UserCell from './UserCell';
 
 export default function UsersTable({users}: {users: User[]}) {

@@ -1,77 +1,55 @@
 'use client';
 
 import {User} from '@/domain/User';
-import styles from './UpdateBalanceForm.module.css';
+import {useEffect, useRef} from 'react';
 import {useFormState, useFormStatus} from 'react-dom';
+import styles from './UpdateBalanceForm.module.css';
 import {updateBalance} from './actions';
-import {useEffect, useRef, useState} from 'react';
-import {Status} from '@/domain/Status';
 
-const initialState = {status: null};
+const initialState = null;
 
-function SubmitButton() {
+function AmountInput() {
     const {pending} = useFormStatus();
 
     return (
-        <button type="submit" aria-disabled={pending}>
-            {pending ? 'Loading...' : 'Submit'}
-        </button>
-    );
-}
-
-function AmountInput({status}: {status?: Status}) {
-    const [amount, setAmount] = useState('');
-    const [description, setDescription] = useState('');
-    const myRef = useRef(null);
-
-    useEffect(
-        function () {
-            setAmount('');
-            setDescription('');
-        },
-        [status]
-    );
-
-    return (
         <>
+            <input id="amount" name="amount" placeholder="amount" />
             <input
-                ref={myRef}
-                onChange={(e) => setAmount(e.target.value)}
-                id="amount"
-                name="amount"
-                value={amount}
-                placeholder="amount"
-            />
-            <input
-                ref={myRef}
-                onChange={(e) => setDescription(e.target.value)}
                 id="description"
                 name="description"
-                value={description}
                 placeholder="description"
             />
+            <button type="submit" aria-disabled={pending}>
+                {pending ? 'Loading...' : 'Submit'}
+            </button>
         </>
     );
 }
 
 export default function UserBalanceControls({user}: {user: User}) {
-    const [state, formAction] = useFormState(updateBalance, initialState);
+    const [state, formAction] = useFormState(
+        updateBalance.bind(null, user.userId),
+        initialState
+    );
+
+    const formRef = useRef<HTMLFormElement>(null);
+
+    useEffect(
+        function () {
+            formRef.current?.reset();
+        },
+        [state]
+    );
 
     return (
         <div className={styles.updateBalanceForm}>
             <p className={styles.balance}>Balance: {user.balance}</p>
-            <form action={formAction} className={styles.formSection}>
-                <input
-                    type="hidden"
-                    id="user-id"
-                    name="user-id"
-                    value={user.userId}
-                />
-                <AmountInput status={state.status} />
-                <SubmitButton />
-                <p aria-live="polite" className={styles.hidden} role="status">
-                    {state?.status}
-                </p>
+            <form
+                ref={formRef}
+                action={formAction}
+                className={styles.formSection}
+            >
+                <AmountInput />
             </form>
         </div>
     );

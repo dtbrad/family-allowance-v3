@@ -1,28 +1,22 @@
 'use server';
-import {revalidatePath} from 'next/cache';
 import updateBalanceRecord from '@/db/updateBalance';
-import {User} from '@/domain/User';
-import {Status} from '@/domain/Status';
-import generatePassword from '@/helpers/generatePassword';
-import addUserRecord from '@/db/addUser';
+import {revalidatePath} from 'next/cache';
 
-function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-export async function updateBalance(prevState: any, formData: FormData) {
-    const userId = formData.get('user-id') as string;
+export async function updateBalance(
+    id: string,
+    prevState: any,
+    formData: FormData
+) {
     const amount = formData.get('amount') as string;
     const description = formData.get('description') as string;
 
     await updateBalanceRecord({
-        userId: userId,
+        userId: id,
         amount: parseFloat(amount),
         description
     });
 
     revalidatePath('/users');
 
-    // return {status: Status.success};
-    return {status: Math.random().toString()};
+    return `added ${amount}: ${description} ${new Date().toISOString()}`;
 }

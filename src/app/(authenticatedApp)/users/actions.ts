@@ -23,23 +23,34 @@ export async function addUser(prevState: any, formData: FormData) {
 
     const name = formData.get('name') as string;
     const password = formData.get('password') as string;
-    const allowanceAmount = formData.get('amount') as string;
+    const allowanceAmount = parseFloat(formData.get('amount') as string);
     const dayPreference = formData.get('dayPreference') as string;
 
-    await addUserRecord({
-        userId: name,
-        password,
-        allowanceAmount,
-        dayPreference
-    });
+    try {
+        await addUserRecord({
+            userId: name,
+            password,
+            allowanceAmount,
+            dayPreference
+        });
 
-    revalidatePath('/users');
+        revalidatePath('/users');
 
-    return {status: `added user with id ${name}`};
+        return {response: `added user with id ${name}`};
+    } catch (error) {
+        const coercedError = error as {code: string; message: string};
+
+        if (coercedError.code === 'ConditionalCheckFailedException') {
+            return {error: 'User already exists'};
+        }
+
+        return {
+            error: `Server Error - ${coercedError.code}: ${coercedError.message}`
+        };
+    }
 }
 
-export async function deleteUser(formData: FormData) {
-    const id = formData.get('id') as string;
+export async function deleteUser(id: string) {
     await deleteUserRecord(id);
 
     revalidatePath('/users');
