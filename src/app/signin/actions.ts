@@ -1,6 +1,5 @@
 'use server';
 
-// import {redirect} from 'next/dist/server/api-utils';
 import {redirect} from 'next/navigation';
 import getUser from '@/db/getUser';
 import {createHmac} from 'crypto';
@@ -39,15 +38,9 @@ function passwordsMatch(password: string, passwordDigest: string) {
     });
 }
 
-function sleep(ms: number) {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 export default async function signinUser(prevState: any, formData: FormData) {
     const name = formData.get('name') as string;
     const password = formData.get('password') as string;
-
-    await sleep(2000);
 
     const userFromDb = await getUser(name);
 

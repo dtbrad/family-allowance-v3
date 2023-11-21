@@ -12,52 +12,58 @@ export async function middleware(request: NextRequest) {
 
     user = await getUserFromToken(accessToken);
 
+    const redirectToUsers = NextResponse.redirect(
+        new URL('/users', request.url)
+    );
+    const redirectToSignin = NextResponse.redirect(
+        new URL('/signin', request.url)
+    );
+    const redirectToSummary = NextResponse.redirect(
+        new URL('/summary', request.url)
+    );
+
     if (nextUrl.pathname === '/') {
-        return NextResponse.redirect(new URL('/users', request.url));
-    }
-
-    if (nextUrl.pathname.startsWith('/users') && !user) {
-        return NextResponse.redirect(new URL('/signin', request.url));
-    }
-
-    // if (
-    //     nextUrl.pathname.startsWith('/users') &&
-    //     user &&
-    //     user?.role === Role.standard
-    // ) {
-    //     return NextResponse.redirect(new URL('/summary', request.url));
-    // }
-
-    // if (nextUrl.pathname === `/users/:path*` && user?.role === Role.standard) {
-    //     return NextResponse.redirect(new URL('/summary', request.url));
-    // }
-
-    if (nextUrl.pathname === '/users') {
         if (!user) {
-            // kick out non-users...
-            return NextResponse.redirect(new URL('/signin', request.url));
+            return redirectToSignin;
+        }
+
+        if (user.role === Role.admin) {
+            return redirectToUsers;
+        }
+
+        return redirectToSummary;
+    }
+
+    if (nextUrl.pathname.startsWith('/users')) {
+        if (!user) {
+            return redirectToSignin;
         }
 
         if (user.role === Role.standard) {
-            return NextResponse.redirect(
-                // new URL(`/users/${user.userId}`, request.url)
-                new URL(`/summary`, request.url)
-            );
+            return redirectToSummary;
+        }
+    }
+
+    if (nextUrl.pathname === `/users/:path*`) {
+        if (user?.role === Role.standard) {
+            redirectToSummary;
         }
     }
 
     if (nextUrl.pathname === '/summary') {
         if (!user) {
-            // kick out non-users...
-            return NextResponse.redirect(new URL('/signin', request.url));
+            return redirectToSignin;
         }
     }
 
-    if (user && nextUrl.pathname === '/signin') {
-        return NextResponse.redirect(
-            new URL('/users', request.url)
-            // new URL(`/summary`, request.url)
-        );
+    if (nextUrl.pathname === '/signin') {
+        if (user?.role === Role.admin) {
+            return redirectToUsers;
+        }
+
+        if (user?.role === Role.standard) {
+            return redirectToSummary;
+        }
     }
 
     return NextResponse.next();

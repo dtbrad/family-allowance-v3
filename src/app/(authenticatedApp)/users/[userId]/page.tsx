@@ -4,8 +4,16 @@ import UserBalanceControls from './UpdateBalanceForm';
 import Link from 'next/link';
 import UserSummaryTable from '@/sharedComponents/UserSummaryTable';
 import styles from './page.module.css';
+import verifyAdminFromCookie from '@/verifyAdminFromCookie';
+import {redirect} from 'next/navigation';
 
 export default async function UserIdPage({params}: {params: {userId: string}}) {
+    const isAdmin = await verifyAdminFromCookie();
+
+    if (!isAdmin) {
+        redirect('/signin');
+    }
+
     const {userId} = params;
     const user = await getUser(userId);
 

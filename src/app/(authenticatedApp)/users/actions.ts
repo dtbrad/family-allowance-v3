@@ -6,19 +6,26 @@ import {Role} from '@/domain/Role';
 import getUserFromToken from '@/helpers/getUserFromToken';
 import {revalidatePath} from 'next/cache';
 import {cookies} from 'next/headers';
+import verifyAdminFromCookie from '@/verifyAdminFromCookie';
 
 export async function addUser(prevState: any, formData: FormData) {
-    const cookieStore = cookies();
-    const accessToken = cookieStore.get('accessToken')?.value;
+    // const cookieStore = cookies();
+    // const accessToken = cookieStore.get('accessToken')?.value;
 
-    if (!accessToken) {
-        throw new Error('boom');
-    }
+    // if (!accessToken) {
+    //     throw new Error('not authorized');
+    // }
 
-    const user = await getUserFromToken(accessToken);
+    // const user = await getUserFromToken(accessToken);
 
-    if (user?.role !== Role.admin) {
-        return {status: 401, message: 'NOT AUTHORIZED'};
+    // if (user?.role !== Role.admin) {
+    //     throw new Error('not authorized');
+    // }
+
+    const isAdmin = await verifyAdminFromCookie();
+
+    if (!isAdmin) {
+        throw new Error('not authorized');
     }
 
     const name = formData.get('name') as string;

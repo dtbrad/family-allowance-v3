@@ -3,6 +3,7 @@ import {dynamo} from './dynamo';
 const tableName = process.env.TABLE_NAME || '';
 
 export default async function deleteUser(userId: string) {
+    console.log('INSIDE DELETE USER OPERATION', userId);
     const userQueryResponse = await dynamo
         .query({
             TableName: tableName,

@@ -3,6 +3,7 @@ import getUserFromToken from '@/helpers/getUserFromToken';
 import getUser from '@/db/getUser';
 import UserSummaryTable from '@/sharedComponents/UserSummaryTable';
 import getUserTransactions from '@/db/getUserTransactions';
+import {redirect} from 'next/navigation';
 
 export default async function SummaryPage() {
     const cookieStore = cookies();
@@ -10,12 +11,11 @@ export default async function SummaryPage() {
 
     const userInfo = await getUserFromToken(accessToken?.value);
 
-    const {passwordDigest, ...userWithoutPass} = await getUser(
-        userInfo?.userId!
-    );
+    if (!userInfo) {
+        redirect('/signin');
+    }
 
-    // @ts-ignore
-    const transactions = await getUserTransactions(userInfo?.userId);
+    const transactions = await getUserTransactions(userInfo.userId);
 
     if (!transactions) {
         return <p>No transactions to report</p>;
@@ -24,7 +24,6 @@ export default async function SummaryPage() {
     return (
         <>
             <h1>Summary</h1>
-            {/* <pre>{JSON.stringify({userWithoutPass}, undefined, 2)}</pre> */}
             <UserSummaryTable transactions={transactions} />
         </>
     );

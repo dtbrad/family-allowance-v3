@@ -1,5 +1,5 @@
-import {dynamo} from './dynamo';
 import {User} from '../domain/User';
+import {dynamo} from './dynamo';
 
 export default async function getUsers() {
     const result = await dynamo
